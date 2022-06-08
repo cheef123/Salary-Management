@@ -15,9 +15,9 @@
 - [ ] support concurrent upload of files?
 
 * CSV file should have the following column headers:  
-* ```index```
-* ```login```
-* ```name```
-* ```salary```
+  * ```index```
+  * ```login```
+  * ```name```
+  * ```salary```
 
 ## User Story 2
