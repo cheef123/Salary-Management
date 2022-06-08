@@ -13,5 +13,5 @@
 - [ ] id and login unique
 - [ ] swap id feature?
 - [ ] support concurrent upload of files?
-- [ ] 
+
 ## User Story 2
