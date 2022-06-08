@@ -14,7 +14,7 @@
 - [ ] swap id feature?
 - [ ] support concurrent upload of files?
 
-* CSV file should have the following column headers (in order for [CSVhelper](/upload/src/main/java/com/cognizant/upload/helper/CSVHelper.java):  
+* CSV file should have the following column headers (in order for [CSVhelper](/upload/src/main/java/com/cognizant/upload/helper/CSVHelper.java) to read and parse fields):  
   * ```index```
   * ```login```
   * ```name```
