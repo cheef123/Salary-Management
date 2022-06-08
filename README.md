@@ -14,4 +14,10 @@
 - [ ] swap id feature?
 - [ ] support concurrent upload of files?
 
+* CSV file should have the following column headers (in order for [CSVhelper](/upload):  
+  * ```index```
+  * ```login```
+  * ```name```
+  * ```salary```
+
 ## User Story 2
