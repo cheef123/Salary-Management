@@ -1,4 +1,4 @@
-package com.cognizant.upload;
+package com.cognizant.upload.helper;
 
 import java.io.BufferedReader;
 import java.io.IOError;
