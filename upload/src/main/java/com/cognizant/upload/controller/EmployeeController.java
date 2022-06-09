@@ -33,6 +33,7 @@ public class EmployeeController {
 				ResponseMessage message = new ResponseMessage("File uploaded successfully: " + file.getOriginalFilename());
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
 			} catch (Exception ex) {
+				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);
 			}
 		} else {
@@ -49,10 +50,10 @@ public class EmployeeController {
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.NO_CONTENT);
 			} else {
 				return new ResponseEntity<List<Employee>>(employees,HttpStatus.OK);
-			} catch (Exception ex) {
-				return new ResponseEntity<String>("Internal server error!",HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		}
+		} catch (Exception ex) {
+			return new ResponseEntity<String>("Internal server error!",HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 	}
 
 }

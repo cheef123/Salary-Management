@@ -18,7 +18,7 @@ public class Employee {
 
 	@Id
 	@Column(name = "id")
-	private int empId;
+	private String empId;
 
 	@Column(name = "login")
 	private String empLogin;

@@ -39,7 +39,7 @@ public class CSVHelper {
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 			for (CSVRecord csvRecord: csvRecords) {
 				Employee employee = new Employee(
-						Integer.parseInt(csvRecord.get("id")), 
+						csvRecord.get("id"), 
 						csvRecord.get("login"), 
 						csvRecord.get("name"),
 						Double.parseDouble("salary"));
