@@ -20,4 +20,10 @@
   * ```name```
   * ```salary```
 
+
+![postmanupload](https://user-images.githubusercontent.com/51468261/172776730-56511678-633a-4a9f-9ec9-765099a27aab.png)
+
+![h2upload](https://user-images.githubusercontent.com/51468261/172776895-1a07fb90-2fb4-4332-be97-09cc12d8cdff.png)
+
+
 ## User Story 2
