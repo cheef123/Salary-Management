@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.NonUniqueIdException;
+import com.cognizant.upload.exception.NonUniqueLoginException;
 import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.repository.EmployeeRepository;
 
@@ -17,7 +19,7 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
-	public void save(MultipartFile file) {
+	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException {
 		try {
 			List<Employee> employees = CSVHelper.csvToEmployees(file.getInputStream());
 			employeeRepository.saveAll(employees);

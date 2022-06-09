@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.NonUniqueIdException;
+import com.cognizant.upload.exception.NonUniqueLoginException;
 import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.pojo.ResponseMessage;
 import com.cognizant.upload.service.EmployeeService;
@@ -26,12 +28,21 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file){
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
 				ResponseMessage message = new ResponseMessage("File uploaded successfully: " + file.getOriginalFilename());
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
+			} catch (IllegalArgumentException ex) {
+				log.info(ex.getMessage());
+				throw new IllegalArgumentException("Missing columns/data!");
+			} catch (NonUniqueIdException ex) {
+				log.info(ex.getMessage());
+				throw new NonUniqueIdException(ex.getMessage());
+			} catch (NonUniqueLoginException ex) {
+				log.info(ex.getMessage());
+				throw new NonUniqueLoginException(ex.getMessage());
 			} catch (Exception ex) {
 				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);
