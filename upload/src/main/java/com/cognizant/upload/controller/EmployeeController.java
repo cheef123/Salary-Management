@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
 import com.cognizant.upload.helper.CSVHelper;
@@ -28,7 +29,7 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException{
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
@@ -45,6 +46,8 @@ public class EmployeeController {
 				throw new NonUniqueLoginException(ex.getMessage());
 			} catch (NullPointerException ex) {
 				throw new NullPointerException(ex.getMessage());
+			} catch (LoginConflictException ex) {
+				throw new LoginConflictException(ex.getMessage());
 			} catch (Exception ex) {
 				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);

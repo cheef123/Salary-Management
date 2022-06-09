@@ -56,5 +56,14 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
 	}
 	
+	
+	@ExceptionHandler(LoginConflictException.class)
+	public ResponseEntity<CustomErrorResponse> handleLoginConflictException(LoginConflictException ex){
+		log.info("Start of LoginConflictException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Login conflict! Consider complex use case if necessary",ex.getMessage());
+		log.info("End of LoginConflictException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
+	
 
 }
