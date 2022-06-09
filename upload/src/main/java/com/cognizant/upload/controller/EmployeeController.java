@@ -63,7 +63,7 @@ public class EmployeeController {
 			List<Employee> employees = service.getAllEmployees();
 			if (employees.isEmpty()) {
 				ResponseMessage message = new ResponseMessage("Database is empty!");
-				return new ResponseEntity<ResponseMessage>(message,HttpStatus.NO_CONTENT);
+				return new ResponseEntity<ResponseMessage>(message,HttpStatus.FORBIDDEN);
 			} else {
 				return new ResponseEntity<List<Employee>>(employees,HttpStatus.OK);
 			}
