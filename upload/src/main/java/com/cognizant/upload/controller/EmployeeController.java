@@ -36,13 +36,15 @@ public class EmployeeController {
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
 			} catch (IllegalArgumentException ex) {
 				log.info(ex.getMessage());
-				throw new IllegalArgumentException("Missing columns/data!");
+				throw new IllegalArgumentException("Missing columns in csv file!");
 			} catch (NonUniqueIdException ex) {
 				log.info(ex.getMessage());
 				throw new NonUniqueIdException(ex.getMessage());
 			} catch (NonUniqueLoginException ex) {
 				log.info(ex.getMessage());
 				throw new NonUniqueLoginException(ex.getMessage());
+			} catch (NullPointerException ex) {
+				throw new NullPointerException(ex.getMessage());
 			} catch (Exception ex) {
 				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);

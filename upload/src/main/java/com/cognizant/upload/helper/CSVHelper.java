@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Enumerated;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -43,27 +45,35 @@ public class CSVHelper {
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 			Map<String, Integer> idMap = new HashMap<>();
 			Map<String, Integer> loginMap = new HashMap<>();
+			int rowCount = 1;
 			for (CSVRecord csvRecord: csvRecords) {
-				if (csvRecord.get("id").startsWith("#")) {
+				String id = csvRecord.get("id");
+				String login = csvRecord.get("login");
+				String name = csvRecord.get("name");
+				String salary = csvRecord.get("salary");
+				
+				if (id.startsWith("#")) {
+					rowCount++;
 					continue;
 				}
-				if (idMap.containsKey(csvRecord.get("id"))){
-					throw new NonUniqueIdException("ID is repeated: " + csvRecord.get("id"));
+				if (id.isBlank()||login.isBlank()||name.isBlank()||salary.isBlank()) {
+					throw new NullPointerException("Missing data in row: " + rowCount);
+				}
+				if (idMap.containsKey(id)){
+					throw new NonUniqueIdException("ID is repeated: " + id);
 				}
 				
-				if (loginMap.containsKey(csvRecord.get("login"))) {
-					throw new NonUniqueLoginException("Login is repeated: " + csvRecord.get("login"));
+				if (loginMap.containsKey(login)) {
+					throw new NonUniqueLoginException("Login is repeated: " + login);
 
 				}
-				idMap.put(csvRecord.get("id"), 1);
-				loginMap.put(csvRecord.get("login"), 1);
 				
-				Employee employee = new Employee(
-						csvRecord.get("id"), 
-						csvRecord.get("login"), 
-						csvRecord.get("name"),
-						Double.parseDouble(csvRecord.get("salary")));
+				idMap.put(id, 1);
+				loginMap.put(login, 1);
+				
+				Employee employee = new Employee(id, login, name,Double.parseDouble(salary));
 				employees.add(employee);
+				rowCount++;
 			} 
 			return employees;	
 			} catch (IOException ex) {
