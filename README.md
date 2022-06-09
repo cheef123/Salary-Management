@@ -25,5 +25,10 @@
 
 ![h2upload](https://user-images.githubusercontent.com/51468261/172776895-1a07fb90-2fb4-4332-be97-09cc12d8cdff.png)
 
+Update existing entry if employeeId exists in database:
+
+![before](https://user-images.githubusercontent.com/51468261/172818276-eac9a40b-4136-42b9-aaf7-eae1643e1df9.png)
+![after](https://user-images.githubusercontent.com/51468261/172818439-b428faad-f0f6-4609-93cc-a0603ad629e4.png)
+
 
 ## User Story 2
