@@ -48,5 +48,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
 	}
 	
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<CustomErrorResponse> handleNullPointerException(NullPointerException ex){
+		log.info("Start of NullPointerException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.EXPECTATION_FAILED,"All columns must be filled!",ex.getMessage());
+		log.info("End of NullPointerException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
+	}
+	
 
 }
