@@ -14,6 +14,16 @@
 - [ ] swap id feature?
 - [ ] support concurrent upload of files?
 
+Acceptance critera:
+- [x] Successful uploading our good test data file with comments, both new and existing records
+- [x] Unsuccessful upload of an empty file
+- [x] Unsuccessful upload of files with partial number of incorrect number of columns (both too many and too few)
+- [ ] Unsuccessful upload of files with some but not all rows with incorrectly formatted salaries
+- [x] Unsuccessful upload of files with some but not all rows with salary < 0.0
+- [ ] Upload 2 files concurrently and receive expected results, or failure.
+
+possbile to use put the method csvtoemployees into employeeservice? so can assess flag repository
+
 * CSV file should have the following column headers (in order for [CSVhelper](/upload/src/main/java/com/cognizant/upload/helper/CSVHelper.java) to read and parse fields):  
   * ```index```
   * ```login```
