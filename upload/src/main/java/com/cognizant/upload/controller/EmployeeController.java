@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.ColumnSizeException;
 import com.cognizant.upload.exception.LoginConflictException;
+import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
 import com.cognizant.upload.helper.CSVHelper;
@@ -29,7 +31,7 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException{
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
@@ -37,7 +39,7 @@ public class EmployeeController {
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
 			} catch (IllegalArgumentException ex) {
 				log.info(ex.getMessage());
-				throw new IllegalArgumentException("Missing columns in csv file!");
+				throw new IllegalArgumentException(ex.getMessage());
 			} catch (NonUniqueIdException ex) {
 				log.info(ex.getMessage());
 				throw new NonUniqueIdException(ex.getMessage());
@@ -48,6 +50,10 @@ public class EmployeeController {
 				throw new NullPointerException(ex.getMessage());
 			} catch (LoginConflictException ex) {
 				throw new LoginConflictException(ex.getMessage());
+			} catch (NegativeSalaryException ex) {
+				throw new NegativeSalaryException(ex.getMessage());
+			} catch (ColumnSizeException ex) {
+				throw new ColumnSizeException(ex.getMessage());
 			} catch (Exception ex) {
 				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);

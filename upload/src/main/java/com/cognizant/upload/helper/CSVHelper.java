@@ -18,6 +18,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.ColumnSizeException;
+import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
 
@@ -37,10 +39,13 @@ public class CSVHelper {
 		return true;
 	}
 
-	public static List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException{
+	public static List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException{
 		try {
 			BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
+			if (csvParser.getHeaderMap().size() != 4) {
+				throw new ColumnSizeException("Number of columns should be 4 instead of " + csvParser.getHeaderMap().size());
+			}
 			List<Employee> employees = new ArrayList<>();
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 			Map<String, Integer> idMap = new HashMap<>();
@@ -58,6 +63,10 @@ public class CSVHelper {
 				}
 				if (id.isBlank()||login.isBlank()||name.isBlank()||salary.isBlank()) {
 					throw new NullPointerException("Missing data in row: " + rowCount);
+				}
+				
+				if (salary.matches("^-\\d+\\.\\d+")) {
+					throw new NegativeSalaryException("Salary must be positive! Error found in row: " + rowCount); 
 				}
 				if (idMap.containsKey(id)){
 					throw new NonUniqueIdException("ID is repeated: " + id);

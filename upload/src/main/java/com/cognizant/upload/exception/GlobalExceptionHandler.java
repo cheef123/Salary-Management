@@ -65,5 +65,25 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
 	
+	@ExceptionHandler(NegativeSalaryException.class)
+	public ResponseEntity<CustomErrorResponse> handleNegativeSalaryException(NegativeSalaryException ex){
+		log.info("Start of NegativeSalaryException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Salary value provided should not be negative!",ex.getMessage());
+		log.info("End of NegativeSalaryException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
+	
+	@ExceptionHandler(ColumnSizeException.class)
+	public ResponseEntity<CustomErrorResponse> handleColumnSizeException(ColumnSizeException ex){
+		log.info("Start of ColumnSizeException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Wrong column size",ex.getMessage());
+		log.info("End of ColumnSizeException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
+	
+	
+	
+	
+	
 
 }
