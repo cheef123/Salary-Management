@@ -53,14 +53,17 @@ public class CSVHelper {
 			int rowCount = 1;
 			for (CSVRecord csvRecord: csvRecords) {
 				String id = csvRecord.get("id");
-				String login = csvRecord.get("login");
-				String name = csvRecord.get("name");
-				String salary = csvRecord.get("salary");
 				
 				if (id.startsWith("#")) {
 					rowCount++;
 					continue;
 				}
+				
+				String login = csvRecord.get("login");
+				String name = csvRecord.get("name");
+				String salary = csvRecord.get("salary");
+				
+				
 				if (id.isBlank()||login.isBlank()||name.isBlank()||salary.isBlank()) {
 					throw new NullPointerException("Missing data in row: " + rowCount);
 				}
