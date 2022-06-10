@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
 import com.cognizant.upload.exception.ColumnSizeException;
+import com.cognizant.upload.exception.EmptyFileException;
 import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
@@ -39,7 +40,7 @@ public class CSVHelper {
 		return true;
 	}
 
-	public static List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException{
+	public static List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException, EmptyFileException{
 		try {
 			BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			CSVParser csvParser = new CSVParser(fileReader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());
@@ -48,6 +49,11 @@ public class CSVHelper {
 			}
 			List<Employee> employees = new ArrayList<>();
 			Iterable<CSVRecord> csvRecords = csvParser.getRecords();
+			
+			if (!csvRecords.iterator().hasNext()) {
+				throw new EmptyFileException("File is empty!");
+			}
+			
 			Map<String, Integer> idMap = new HashMap<>();
 			Map<String, Integer> loginMap = new HashMap<>();
 			int rowCount = 1;

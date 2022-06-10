@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
 import com.cognizant.upload.exception.ColumnSizeException;
+import com.cognizant.upload.exception.EmptyFileException;
 import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
@@ -22,7 +23,7 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
-	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException {
+	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException {
 		try {
 			List<Employee> employees = CSVHelper.csvToEmployees(file.getInputStream());
 			for (Employee employee:employees) {

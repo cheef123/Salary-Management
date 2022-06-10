@@ -82,6 +82,16 @@ public class GlobalExceptionHandler {
 	}
 	
 	
+	@ExceptionHandler(EmptyFileException.class)
+	public ResponseEntity<CustomErrorResponse> handleEmptyFileException(EmptyFileException ex){
+		log.info("Start of EmptyFileException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Empty File",ex.getMessage());
+		log.info("End of EmptyFileException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
+	
+	
+	
 	
 	
 	

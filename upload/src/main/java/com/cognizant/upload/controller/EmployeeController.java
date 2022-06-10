@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
 import com.cognizant.upload.exception.ColumnSizeException;
+import com.cognizant.upload.exception.EmptyFileException;
 import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
@@ -31,20 +32,21 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException{
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
 				ResponseMessage message = new ResponseMessage("File uploaded successfully: " + file.getOriginalFilename());
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
+			} catch (ColumnSizeException ex) {
+				throw new ColumnSizeException(ex.getMessage());
+			} catch (EmptyFileException ex) {
+				throw new EmptyFileException(ex.getMessage());
 			} catch (IllegalArgumentException ex) {
-				log.info(ex.getMessage());
 				throw new IllegalArgumentException(ex.getMessage());
 			} catch (NonUniqueIdException ex) {
-				log.info(ex.getMessage());
 				throw new NonUniqueIdException(ex.getMessage());
 			} catch (NonUniqueLoginException ex) {
-				log.info(ex.getMessage());
 				throw new NonUniqueLoginException(ex.getMessage());
 			} catch (NullPointerException ex) {
 				throw new NullPointerException(ex.getMessage());
@@ -52,10 +54,7 @@ public class EmployeeController {
 				throw new LoginConflictException(ex.getMessage());
 			} catch (NegativeSalaryException ex) {
 				throw new NegativeSalaryException(ex.getMessage());
-			} catch (ColumnSizeException ex) {
-				throw new ColumnSizeException(ex.getMessage());
 			} catch (Exception ex) {
-				log.info(ex.getMessage());
 				return new ResponseEntity<String>("Upload failed: " + file.getOriginalFilename(),HttpStatus.EXPECTATION_FAILED);
 			}
 		} else {
