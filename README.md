@@ -42,3 +42,5 @@ Update existing entry if employeeId exists in database:
 
 
 ## User Story 2
+
+assumption: strictly either + or - in url, column names no capitalisation
