@@ -46,3 +46,5 @@ Update existing entry if employeeId exists in database:
 assumption: strictly either + or - in url, column names no capitalisation
 
 todo: need take care of possible exceptions when calling the getUsers (out of list index etc)
+
+To build the Angular application, it is required to install the pagination dependency. Go to Node.js command prompt, cd to the folder of interest and type in the following command: ```npm i ngx-pagination```
