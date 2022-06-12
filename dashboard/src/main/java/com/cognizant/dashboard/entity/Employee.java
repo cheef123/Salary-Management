@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Employee {
 	
 	@Id
-	private int id;
+	private String id;
 	private String name;
 	private String login;
 	private double salary;
