@@ -18,6 +18,7 @@ export class UploadComponent implements OnInit {
 
   selectFile(event: any) {
     this.selectedFiles = event.target.files;
+    this.message = " ";
   }
 
   upload() {
@@ -27,12 +28,17 @@ export class UploadComponent implements OnInit {
       event => {
         if (event.type === HttpEventType.UploadProgress) {
           this.progress = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          this.message = event.body.message;
+          console.log(event.body);
         }
       },
+
       err => {
         this.progress = 0;
-        this.message = 'Could not upload the file!';
+        this.message = "Could not upload file! " + err.error.reason + " " + err.error.message;
         this.currentFile = undefined;
+        console.log(err.error);
       });
     this.selectedFiles = undefined;
   }
