@@ -1,0 +1,119 @@
+<p>dashboard works!</p>
+<button (click)="getUsers()">Delete</button>
+<ul *ngFor="let result of results">
+    <li>{{result.id}} {{result.name}} {{result.login}} {{result.salary}}</li>
+</ul>
+
+<form #f="ngForm"
+      (ngSubmit)="submit(f.value)">
+    <div class="form-group">
+        <label for="minSalary">Minimum Salary</label>
+        <input required
+               id="minSalary"
+               type="number"
+               class="form-control"
+               ngModel
+               name="minSalary"
+               #minSalary="ngModel">
+        <div class="alert alert-danger"
+             *ngIf="minSalary.touched && !minSalary.valid">
+            <div *ngIf="minSalary.errors?.['required']">Minimum Salary is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="maxSalary">Maximum Salary</label>
+        <input required
+               id="maxSalary"
+               type="number"
+               class="form-control"
+               ngModel
+               name="maxSalary"
+               #maxSalary="ngModel">
+        <div class="alert alert-danger"
+             *ngIf="maxSalary.touched && !maxSalary.valid">
+            <div *ngIf="maxSalary.errors?.['required']">Maximum Salary is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="offset">Offset value</label>
+        <input required
+               id="offset"
+               type="number"
+               class="form-control"
+               ngModel
+               name="offset"
+               #offset="ngModel">
+        <div class="alert alert-danger"
+             *ngIf="offset.touched && !offset.valid">
+            <div *ngIf="offset.errors?.['required']">Offset value is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="limit">Limit</label>
+        <input required
+               id="limit"
+               type="number"
+               class="form-control"
+               ngModel
+               name="limit"
+               #limit="ngModel">
+        <div class="alert alert-danger"
+             *ngIf="limit.touched && !limit.valid">
+            <div *ngIf="limit.errors?.['required']">Limit value is required</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="orderby">Order by</label>
+        <select ngModel
+                required
+                #orderby="ngModel"
+                class="form-control"
+                name="orderby"
+                id="orderby">
+            <option value=""></option>
+            <option *ngFor="let column of columns">
+                {{column}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="sort">Sort by</label>
+        <select ngModel
+                required
+                #sort="ngModel"
+                class="form-control"
+                name="sort"
+                id="sort">
+            <option value="Ascending">Ascending</option>
+            <option value="Descending">Descending</option>
+        </select>
+        <button class="btn btn-primary"
+                [disabled]="f.invalid">Filter</button>
+    </div>
+
+
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Login</th>
+            <th>Salary</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let result of results | paginate: {id: 'listing_pagination', itemsPerPage:2, currentPage:page,
+        totalItems:totalRecords}">
+            <td>{{result.id}}</td>
+            <td>{{result.name}}</td>
+            <td>{{result.login}}</td>
+            <td>{{result.salary}}</td>
+        </tr>
+    </tbody>
+</table>
+<div>
+    <pagination-controls id="listing_pagination"
+                         (pageChange)="page = $event"></pagination-controls>
+</div>
