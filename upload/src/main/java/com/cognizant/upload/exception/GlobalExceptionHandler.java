@@ -90,6 +90,13 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
 	
+	@ExceptionHandler(ConcurrentUploadException.class)
+	public ResponseEntity<CustomErrorResponse> handleConcurrentUploadException(ConcurrentUploadException ex){
+		log.info("Start of ConcurrentUploadException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Concurrent uploads!",ex.getMessage());
+		log.info("End of ConcurrentUploadException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
 	
 	
 	

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
 import com.cognizant.upload.exception.ColumnSizeException;
+import com.cognizant.upload.exception.ConcurrentUploadException;
 import com.cognizant.upload.exception.EmptyFileException;
 import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NegativeSalaryException;
@@ -24,6 +26,7 @@ import com.cognizant.upload.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
 
+@CrossOrigin("http://localhost:4200")
 @RestController
 @Slf4j
 public class EmployeeController {
@@ -32,12 +35,14 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException{
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
 				ResponseMessage message = new ResponseMessage("File uploaded successfully: " + file.getOriginalFilename());
 				return new ResponseEntity<ResponseMessage>(message,HttpStatus.OK);
+			} catch (ConcurrentUploadException ex) {
+				throw new ConcurrentUploadException(ex.getMessage());
 			} catch (ColumnSizeException ex) {
 				throw new ColumnSizeException(ex.getMessage());
 			} catch (EmptyFileException ex) {
