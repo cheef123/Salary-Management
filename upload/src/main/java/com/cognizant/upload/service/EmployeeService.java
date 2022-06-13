@@ -25,6 +25,7 @@ import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
+import com.cognizant.upload.exception.SalaryFormatException;
 import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.repository.ConcurrentFlagRepository;
 import com.cognizant.upload.repository.EmployeeRepository;
@@ -38,7 +39,7 @@ public class EmployeeService {
 	@Autowired
 	private ConcurrentFlagRepository flagRepository;
 	
-	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException {
+	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException {
 		try {
 			if (!flagRepository.findById(1).get().isConcurrent()) {
 				ConcurrentFlag flag = new ConcurrentFlag(1,true);
@@ -69,7 +70,7 @@ public class EmployeeService {
 		return employeeRepository.findAll();
 	}
 	
-	public List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException, EmptyFileException{
+	public List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException, EmptyFileException, SalaryFormatException{
 		try {
 			ConcurrentFlag flag = new ConcurrentFlag(1,false);
 			flagRepository.save(flag);
@@ -105,21 +106,26 @@ public class EmployeeService {
 				
 				if (id.isBlank()||login.isBlank()||name.isBlank()||salary.isBlank()) {
 					flagRepository.save(flag);
-					throw new NullPointerException("Missing data in row: " + rowCount);
+					throw new NullPointerException("Missing data in row: " + rowCount+"!");
+				}
+				
+				if (!salary.matches("^\\d+\\.\\d+")) {
+					flagRepository.save(flag);
+					throw new SalaryFormatException("Wrong salary format in row: " + rowCount +"!");
 				}
 				
 				if (salary.matches("^-\\d+\\.\\d+")) {
 					flagRepository.save(flag);
-					throw new NegativeSalaryException("Salary must be positive! Error found in row: " + rowCount); 
+					throw new NegativeSalaryException("Salary must be positive! Error found in row: " + rowCount+"!"); 
 				}
 				if (idMap.containsKey(id)){
 					flagRepository.save(flag);
-					throw new NonUniqueIdException("ID is repeated: " + id);
+					throw new NonUniqueIdException("ID is repeated: " + id+"!");
 				}
 				
 				if (loginMap.containsKey(login)) {
 					flagRepository.save(flag);
-					throw new NonUniqueLoginException("Login is repeated: " + login);
+					throw new NonUniqueLoginException("Login is repeated: " + login+"!");
 
 				}
 				

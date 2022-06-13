@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<CustomErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex){
 		log.info("Start of IllegalArgumentException");
-		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.EXPECTATION_FAILED,"Illegal Argument",ex.getMessage());
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.EXPECTATION_FAILED,"Illegal Argument!",ex.getMessage());
 		log.info("End of IllegalArgumentException");
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
 	}
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(LoginConflictException.class)
 	public ResponseEntity<CustomErrorResponse> handleLoginConflictException(LoginConflictException ex){
 		log.info("Start of LoginConflictException");
-		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Login conflict! Consider complex use case if necessary",ex.getMessage());
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Login conflict! Consider complex use case if necessary!",ex.getMessage());
 		log.info("End of LoginConflictException");
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ColumnSizeException.class)
 	public ResponseEntity<CustomErrorResponse> handleColumnSizeException(ColumnSizeException ex){
 		log.info("Start of ColumnSizeException");
-		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Wrong column size",ex.getMessage());
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Wrong column size!",ex.getMessage());
 		log.info("End of ColumnSizeException");
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(EmptyFileException.class)
 	public ResponseEntity<CustomErrorResponse> handleEmptyFileException(EmptyFileException ex){
 		log.info("Start of EmptyFileException");
-		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Empty File",ex.getMessage());
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Empty File!",ex.getMessage());
 		log.info("End of EmptyFileException");
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
@@ -95,6 +95,14 @@ public class GlobalExceptionHandler {
 		log.info("Start of ConcurrentUploadException");
 		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Concurrent uploads!",ex.getMessage());
 		log.info("End of ConcurrentUploadException");
+		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
+	}
+	
+	@ExceptionHandler(SalaryFormatException.class)
+	public ResponseEntity<CustomErrorResponse> handleSalaryFormatException(SalaryFormatException ex){
+		log.info("Start of SalaryFormatException");
+		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.FORBIDDEN,"Incorrectly formatted salary!",ex.getMessage());
+		log.info("End of SalaryFormatException");
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.FORBIDDEN);
 	}
 	

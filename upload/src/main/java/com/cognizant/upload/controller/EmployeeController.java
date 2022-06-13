@@ -20,6 +20,7 @@ import com.cognizant.upload.exception.LoginConflictException;
 import com.cognizant.upload.exception.NegativeSalaryException;
 import com.cognizant.upload.exception.NonUniqueIdException;
 import com.cognizant.upload.exception.NonUniqueLoginException;
+import com.cognizant.upload.exception.SalaryFormatException;
 import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.pojo.ResponseMessage;
 import com.cognizant.upload.service.EmployeeService;
@@ -35,7 +36,7 @@ public class EmployeeController {
 	private EmployeeService service;
 	
 	@PostMapping("/upload")
-	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException{
+	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException{
 		if (CSVHelper.hasCSVFormat(file)) {
 			try {
 				service.save(file);
@@ -57,6 +58,8 @@ public class EmployeeController {
 				throw new NullPointerException(ex.getMessage());
 			} catch (LoginConflictException ex) {
 				throw new LoginConflictException(ex.getMessage());
+			} catch (SalaryFormatException ex) {
+				throw new SalaryFormatException(ex.getMessage());
 			} catch (NegativeSalaryException ex) {
 				throw new NegativeSalaryException(ex.getMessage());
 			} catch (Exception ex) {
