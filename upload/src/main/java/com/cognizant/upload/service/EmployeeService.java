@@ -30,6 +30,12 @@ import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.repository.ConcurrentFlagRepository;
 import com.cognizant.upload.repository.EmployeeRepository;
 
+/**
+ * This class is used to save the Employee details into database and checking
+ * whether the csv file uploaded fulfills certain user requirements.
+ * @author cheef
+ *
+ */
 @Service
 public class EmployeeService {
 
@@ -39,6 +45,10 @@ public class EmployeeService {
 	@Autowired
 	private ConcurrentFlagRepository flagRepository;
 	
+	/**
+	 * This method uses csvToEmployees method to save all employee details obtained from the csv into the repository
+	 * @param file
+	 */
 	public void save(MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException {
 		try {
 			if (!flagRepository.findById(1).get().isConcurrent()) {
@@ -65,11 +75,17 @@ public class EmployeeService {
 			throw new RuntimeException("Failed to store CSV data: " + ex.getMessage());
 		}
 	}
-	
+	/**
+	 * This method retrieves all the employee details from the database as a list
+	 * @return
+	 */
 	public List<Employee> getAllEmployees(){
 		return employeeRepository.findAll();
 	}
 	
+	/**
+	 * This method is used to check for the necessary requirements in order to upload a csv file. 
+	 */
 	public List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException, NegativeSalaryException, ColumnSizeException, EmptyFileException, SalaryFormatException{
 		try {
 			ConcurrentFlag flag = new ConcurrentFlag(1,false);

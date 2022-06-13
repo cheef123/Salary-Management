@@ -1,5 +1,10 @@
 package com.cognizant.upload.exception;
 
+/**
+ * This class is used for handling exception. It will be thrown when concurrent upload is attempted
+ * @author cheef
+ *
+ */
 public class ConcurrentUploadException extends Exception {
 
 	/**

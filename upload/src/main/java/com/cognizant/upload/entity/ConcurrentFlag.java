@@ -8,6 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * This class uses the concurrent field to check if an upload is ongoing at the
+ * same time. Uploads will only be able to occur when concurrent flag is false.
+ * This field is updated whenever an upload commences or ends.
+ * 
+ * @author cheef
+ *
+ */
 @Entity
 @Data
 @AllArgsConstructor

@@ -27,6 +27,13 @@ import com.cognizant.upload.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This class is having all the endpoints related to uploading and retrieving purposes. 
+ * 
+ * @author cheef
+ *
+ */
+
 @CrossOrigin("http://localhost:4200")
 @RestController
 @Slf4j
@@ -35,6 +42,20 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService service;
 	
+	/**
+	 * This method first checks if the uploaded file is of a csv format. If it is, it will call upon {@link EmployeeService} to save the file into the repository.
+	 * If not, it will return a {@link ResponseEntity} with bad request.
+	 * @param file
+	 * @return
+	 * @throws NonUniqueIdException If current id exists in database
+	 * @throws NonUniqueLoginException If current login exists in database
+	 * @throws LoginConflictException If login exist in database with a different id
+	 * @throws NegativeSalaryException If salary is negative
+	 * @throws ColumnSizeException If column size is less than or more than 4
+	 * @throws EmptyFileException If csv file is empty
+	 * @throws ConcurrentUploadException If an upload is still ongoing 
+	 * @throws SalaryFormatException If format of salary is nondecimal
+	 */
 	@PostMapping("/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException{
 		if (CSVHelper.hasCSVFormat(file)) {
@@ -70,6 +91,11 @@ public class EmployeeController {
 		}
 	}
 	
+	/**
+	 * This method retrieves all the {@link Employee} from the database. If database is empty, return forbidden status.
+	 * 
+	 * @return
+	 */
 	@GetMapping("/employees")
 	public ResponseEntity<?> getAllEmployees(){
 		try {

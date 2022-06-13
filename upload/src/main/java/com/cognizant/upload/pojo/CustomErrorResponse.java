@@ -5,10 +5,21 @@ import java.time.LocalTime;
 
 import org.springframework.http.HttpStatus;
 
+import com.prototype.auditauthentication.model.CustomErrorResponse;
+import com.prototype.auditauthentication.model.GlobalErrorHandler;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+*
+*  This class we are using as a response of error handling message.
+*          In the {@link GlobalErrorHandler} class we are using this
+*          {@link CustomErrorResponse} class as a return type that will be
+*          shown to the client whenever any kind of exception occurs. The
+*          fields of this class will be used to show this kind of response.
+*/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
