@@ -48,8 +48,8 @@ export class DashboardComponent implements OnInit {
       this.sort = "-"
     }
     console.log(filter);
-    this.getUsers();
     this.page = 1;
+    this.getUsers();
   }
 
 
