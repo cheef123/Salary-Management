@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * This class stores the information of an Employee into the database
+ * @author cheef
+ *
+ */
 @Entity
 @Data
 @NoArgsConstructor
