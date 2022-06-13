@@ -19,7 +19,7 @@ Opening your brower on ```http://localhost:4200``` will lead to the following pa
 
 ![image](https://user-images.githubusercontent.com/51468261/173272942-1cce73d7-e4d3-4cc5-b605-78a622940f5f.png)
 
-To test out the features of the application, feel free to make use of the [CSV files](/csv_files) and see the respective success/error messages. Uploaded CSV files will have the values updated in the ```H2 database```. This database can be accessed via ```http://localhost8080/h2-console``` with the following login details:
+To test out the features of the application, a few [CSV files](/csv_files) were used to see the respective success/error messages. Uploaded CSV files will have the values updated in the ```H2 database```. This database can be accessed via ```http://localhost8080/h2-console``` with the following login details:
 
 ![image](https://user-images.githubusercontent.com/51468261/173273500-6dc09f8b-8473-48ee-86b4-a8644733ea1d.png)
 
@@ -31,7 +31,13 @@ Upon connecting, run the statement as shown below to see the values that were up
 ### User Story 2
 First, run the [Springboot Application](dashboard/src/main/java/com/cognizant/dashboard/DashboardApplication.java) as a Java application. This application will then start normally on port: ```8081```
 
-Next, start the frontend application using ```Node.js command prompt```. This can be done via the following commands:
+To build the Angular application, it is required to install the pagination dependency. Go to Node.js command prompt, cd to the folder of interest and type in the following command: 
+```
+cd <folder_containing_dashboard_frontend>
+npm i ngx-pagination
+```
+
+Upon completion, start the frontend application using ```Node.js command prompt```. This can be done via the following commands:
 ```
 cd <folder_containing_dashboard_frontend>
 ng serve
@@ -51,39 +57,36 @@ Upon inputing values into the respective **compulsory** fields, click on the blu
 Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```, all other login details are the same as those in User Story 1.
 
 
-### Notes
-## User Story 1
-Acceptance critera:
-- [x] Successful uploading our good test data file with comments, both new and existing records
-- [x] Unsuccessful upload of an empty file
-- [x] Unsuccessful upload of files with partial number of incorrect number of columns (both too many and too few)
-- [ ] Unsuccessful upload of files with some but not all rows with incorrectly formatted salaries
-- [x] Unsuccessful upload of files with some but not all rows with salary < 0.0
-- [x] Upload 2 files concurrently and receive expected results, or failure.
+## Notes
+### User Story 1
+**Acceptance critera:**
+- [x] Successful uploading our good test data file with comments, both new and existing records (using files from harrypotter_update1 to harrypotter_update4)
+- [x] Unsuccessful upload of an empty file (using [harrypotter_empty.csv](csv_files/harrypotter_empty.csv))
+- [x] Unsuccessful upload of files with partial number of incorrect number of columns (using [harrypotter_column.csv](csv_files/harrypotter_colum.csv))
+- [x] Unsuccessful upload of files with some but not all rows with incorrectly formatted salaries (using [harrypotter_wrongsalaryformat.csv](csv_files/harrypotter_wrongsalaryformat.csv))
+- [x] Unsuccessful upload of files with some but not all rows with salary < 0.0 (using [harrypotter.csv](csv_files/harrypotter.csv))
+- [x] Upload 2 files concurrently and receive expected results, or failure. (This is done using a [flag repository](upload/src/main/java/com/cognizant/upload/repository/ConcurrentFlagRepository.java) to check if there is an ongoing upload occuring)
 
-possbile to use put the method csvtoemployees into employeeservice? so can assess flag repository
-
+**Assumptions:**
 * CSV file should have the following column headers (in order for [CSVhelper](/upload/src/main/java/com/cognizant/upload/helper/CSVHelper.java) to read and parse fields):  
   * ```index```
   * ```login```
   * ```name```
   * ```salary```
 
+### User Story 2
+**Acceptance critera:**
+- [x] When click on next page, it should be able to display records, with no overlappedrecords in page 1 and page 2
+- [x] When performing a search for min salary of 0 and max salary of 4000, it should onlyreturn records with salary between 0 <= salary <= 4000
+- [x] When sorting by name in ascending order, it should display in ascending order by name
+- [x] When sorting by salary in ascending order, it should display in ascending order by salary
+- [x] When sorting by login descending order, it should display in descending order by login
 
-![postmanupload](https://user-images.githubusercontent.com/51468261/172776730-56511678-633a-4a9f-9ec9-765099a27aab.png)
-
-![h2upload](https://user-images.githubusercontent.com/51468261/172776895-1a07fb90-2fb4-4332-be97-09cc12d8cdff.png)
-
-Update existing entry if employeeId exists in database:
-
-![before](https://user-images.githubusercontent.com/51468261/172818276-eac9a40b-4136-42b9-aaf7-eae1643e1df9.png)
-![after](https://user-images.githubusercontent.com/51468261/172818439-b428faad-f0f6-4609-93cc-a0603ad629e4.png)
+**Assumptions:** 
+* Strictly either ```+``` or ```-``` in url for RequestParams ```sort``` 
+* Column names are in small letters
+* ```Offset``` value must not be larger than ```limit``` value
+* Minimum salary must not be < 0
+* In the frontend application, all fields must be filled with the correct format before clicking on the filter button
 
 
-## User Story 2
-
-assumption: strictly either + or - in url, column names no capitalisation
-
-todo: need take care of possible exceptions when calling the getUsers (out of list index etc)
-
-To build the Angular application, it is required to install the pagination dependency. Go to Node.js command prompt, cd to the folder of interest and type in the following command: ```npm i ngx-pagination```
