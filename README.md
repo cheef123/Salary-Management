@@ -19,7 +19,7 @@ Opening your brower on ```http://localhost:4200``` will lead to the following pa
 
 ![image](https://user-images.githubusercontent.com/51468261/173272942-1cce73d7-e4d3-4cc5-b605-78a622940f5f.png)
 
-To test out the features of the application, feel free to make use of the [CSV files](/upload/csv_files) and see the respective success/error messages. Uploaded CSV files will have the values updated in the ```H2 database```. This database can be accessed via ```http://localhost8080/h2-console``` with the following login details:
+To test out the features of the application, feel free to make use of the [CSV files](/csv_files) and see the respective success/error messages. Uploaded CSV files will have the values updated in the ```H2 database```. This database can be accessed via ```http://localhost8080/h2-console``` with the following login details:
 
 ![image](https://user-images.githubusercontent.com/51468261/173273500-6dc09f8b-8473-48ee-86b4-a8644733ea1d.png)
 
