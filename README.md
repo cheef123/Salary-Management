@@ -82,7 +82,7 @@ Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```,
 - [x] When sorting by salary in ascending order, it should display in ascending order by salary
 - [x] When sorting by login descending order, it should display in descending order by login
 
-**Assumptions:** 
+**Assumptions:** (Due to timeconstraints, custom exceptions were not thrown)
 * Strictly either ```+``` or ```-``` in url for RequestParams ```sort``` 
 * Column names are in small letters
 * ```Offset``` value must not be larger than ```limit``` value
