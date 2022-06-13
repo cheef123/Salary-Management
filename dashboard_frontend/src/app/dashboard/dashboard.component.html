@@ -123,8 +123,8 @@
         <tr *ngFor="let result of results | paginate: {id: 'listing_pagination', itemsPerPage:5, currentPage:page,
         totalItems:totalRecords}">
             <td>{{result.id}}</td>
-            <td>{{result.name}}</td>
             <td>{{result.login}}</td>
+            <td>{{result.name}}</td>
             <td>{{result.salary}}</td>
         </tr>
     </tbody>

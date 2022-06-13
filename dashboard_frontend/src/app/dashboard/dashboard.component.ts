@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit {
     }
     console.log(filter);
     this.getUsers();
+    this.page = 1;
   }
 
 
