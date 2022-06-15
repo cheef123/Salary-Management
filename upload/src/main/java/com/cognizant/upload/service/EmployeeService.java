@@ -49,6 +49,7 @@ public class EmployeeService {
 	public void setConcurrentFlag(ConcurrentFlag flag, boolean b) {
 		flag.setConcurrent(b);
 		flagRepository.save(flag);
+		testing
 	}
 	
 	/**
