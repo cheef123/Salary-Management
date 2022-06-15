@@ -45,6 +45,12 @@ public class EmployeeService {
 	@Autowired
 	private ConcurrentFlagRepository flagRepository;
 	
+	
+	public void setConcurrentFlag(ConcurrentFlag flag, boolean b) {
+		flag.setConcurrent(b);
+		flagRepository.save(flag);
+	}
+	
 	/**
 	 * This method uses csvToEmployees method to save all employee details obtained from the csv into the repository
 	 * @param file
@@ -53,7 +59,7 @@ public class EmployeeService {
 		try {
 			if (!flagRepository.findById(1).get().isConcurrent()) {
 				ConcurrentFlag flag = new ConcurrentFlag(1,true);
-				flagRepository.save(flag);
+				flagRepository.save(new ConcurrentFlag(1,true));
 				List<Employee> employees = csvToEmployees(file.getInputStream());
 				for (Employee employee:employees) {
 					 List<Employee> findByEmpLogin = employeeRepository.findByEmpLogin(employee.getEmpLogin());
