@@ -5,8 +5,6 @@ import java.time.LocalTime;
 
 import org.springframework.http.HttpStatus;
 
-import com.prototype.auditauthentication.model.CustomErrorResponse;
-import com.prototype.auditauthentication.model.GlobalErrorHandler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
