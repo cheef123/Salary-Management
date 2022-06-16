@@ -90,3 +90,18 @@ Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```,
 * In the frontend application, all fields must be filled with the correct format before clicking on the filter button
 
 
+### User Story 3
+- [x] When I resize my web browser into phone form, the layout should be automaticallychanged to the appropriate form factor layout.
+- [x] When clicked on edit function on an employee on USER story #2, i should be able to edit the employee details on the user interface
+- [x] When clicked on the save button, the modification should be persisted on the backend.
+- [x] At the employee dashboard page, you should be able to see the modified information
+- [x] When clicked on the delete button, a confirmation prompt should ask me if I really want to delete this employee
+- [x] When confirmed, the deletion should be persisted on the backend
+- [x] At the employee dashboard page, you should not be able to see this employee. (Need to click on the ```filter``` button again)
+
+
+![image](https://user-images.githubusercontent.com/51468261/174104938-4b631c0a-420f-40aa-b9cb-3ae74d2d2639.png)
+
+**Notes:**
+* After editing the salary, the updated value will be reflected on the same row of results. User have to click on the ```filter``` button again to sort the updated value accordingly
+* After deleting an employee, need to click on the filter button again to ensure that the employee record is not available on the dashboard page again
