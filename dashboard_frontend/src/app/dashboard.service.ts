@@ -22,7 +22,14 @@ export class DashboardService {
     })
 
     return this.httpClient.get<Employee[]>('http://localhost:8081/users', { params: httpParams });
+  }
 
+  updateEmployee(emp: Employee): Observable<Employee[]> {
+    return this.httpClient.patch<Employee[]>('http:localhost:8081/users/' + emp.id, emp);
+  }
+
+  deleteEmployee(emp: Employee): Observable<Employee[]> {
+    return this.httpClient.delete<Employee[]>('http:localhost:8081/users/' + emp.id);
   }
 
 }
