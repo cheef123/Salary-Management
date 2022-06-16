@@ -56,6 +56,10 @@ Upon inputing values into the respective **compulsory** fields, click on the blu
 
 Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```, all other login details are the same as those in User Story 1.
 
+### User Story 3
+User Story 3 is a continuation of User Story 2, with the addition of an ```edit``` and ```delete``` button. As such, setup remains the same as User Story 2
+![image](https://user-images.githubusercontent.com/51468261/174104938-4b631c0a-420f-40aa-b9cb-3ae74d2d2639.png)
+
 
 ## Notes
 ### User Story 1
@@ -91,6 +95,7 @@ Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```,
 
 
 ### User Story 3
+**Acceptance critera:**
 - [x] When I resize my web browser into phone form, the layout should be automaticallychanged to the appropriate form factor layout.
 - [x] When clicked on edit function on an employee on USER story #2, i should be able to edit the employee details on the user interface
 - [x] When clicked on the save button, the modification should be persisted on the backend.
@@ -100,7 +105,6 @@ Apart from the JDBC URL which is changed to ```jdbc:h2:mem:EmployeeDashboard```,
 - [x] At the employee dashboard page, you should not be able to see this employee. (Need to click on the ```filter``` button again)
 
 
-![image](https://user-images.githubusercontent.com/51468261/174104938-4b631c0a-420f-40aa-b9cb-3ae74d2d2639.png)
 
 **Notes:**
 * After editing the salary, the updated value will be reflected on the same row of results. User have to click on the ```filter``` button again to sort the updated value accordingly
