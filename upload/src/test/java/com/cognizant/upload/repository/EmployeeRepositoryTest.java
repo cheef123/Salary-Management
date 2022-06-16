@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @DataJpaTest
-class EmployeeRepositoryTest {
+public class EmployeeRepositoryTest {
 
 	@Autowired
 	private EmployeeRepository repository;

@@ -30,7 +30,7 @@ import com.cognizant.upload.exception.NonUniqueLoginException;
  *
  */
 public class CSVHelper {
-	public static String TYPE = "text/csv";
+	public static final String TYPE = "text/csv";
 
 	/**
 	 * Check if filetype is of "text/csv"

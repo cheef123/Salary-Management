@@ -29,7 +29,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cognizant.upload.entity.Employee;
+import com.cognizant.upload.exception.ColumnSizeException;
 import com.cognizant.upload.exception.ConcurrentUploadException;
+import com.cognizant.upload.exception.EmptyFileException;
+import com.cognizant.upload.exception.LoginConflictException;
+import com.cognizant.upload.exception.NegativeSalaryException;
+import com.cognizant.upload.exception.NonUniqueIdException;
+import com.cognizant.upload.exception.NonUniqueLoginException;
+import com.cognizant.upload.exception.SalaryFormatException;
 import com.cognizant.upload.helper.CSVHelper;
 import com.cognizant.upload.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -112,10 +119,17 @@ class EmployeeControllerTest {
 		when(employeeService.getAllEmployees()).thenReturn(employees);
 		mockMvc.perform(get("/employees"))
 		.andExpect(status().isForbidden())
-//		.andExpect(jsonPath("$.size()", is(employees.size())))
 		.andExpect(jsonPath("$.message", is("Database is empty!")))
 		.andDo(print());
 		
+	}
+	
+	@Test
+	public void throwExceptiontest() throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException {
+		byte[] content = null;
+		MultipartFile file = new MockMultipartFile("test", content);
+		doThrow(ConcurrentUploadException.class).when(employeeService).save(file);
+		assertThrows(ConcurrentUploadException.class, ()-> employeeService.save(file));
 	}
 	
 	
