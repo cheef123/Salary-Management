@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 
 import com.cognizant.dashboard.entity.Employee;
+import com.cognizant.dashboard.exception.ResourceNotFoundException;
 import com.cognizant.dashboard.repository.EmployeeRepository;
 
 @SpringBootTest
@@ -102,5 +104,13 @@ class EmployeeControllerTest {
 		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, " ");
 		Mockito.when(repository.findBySalaryBetweenOrderByIdDesc(0, 400)).thenReturn(employees);
 		assertEquals("Internal Server Error", responseEntity.getBody());
+	}
+	
+	@Test
+	void updateEmployeeTest() throws ResourceNotFoundException {
+		Employee employee = new Employee(4, "Lucifer", "Lucy", 1000);
+		ResponseEntity<?> responseEntity = controller.updateEmployees(4, employee);
+		Mockito.when(repository.findById(4)).thenReturn(Optional.of(employee));
+		assertEquals(employee, responseEntity.getBody());
 	}
 }

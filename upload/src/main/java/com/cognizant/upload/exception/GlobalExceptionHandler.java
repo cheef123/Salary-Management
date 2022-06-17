@@ -21,13 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalExceptionHandler {
 	
-	@ExceptionHandler(MaxUploadSizeExceededException.class)
-	public ResponseEntity<CustomErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException ex){
-		log.info("Start of MaxUploadSizeExceededException");
-		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.EXPECTATION_FAILED,"Size of file is too large!",ex.getMessage());
-		log.info("End of MaxUploadSizeExceededException");
-		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
-	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<CustomErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex){
