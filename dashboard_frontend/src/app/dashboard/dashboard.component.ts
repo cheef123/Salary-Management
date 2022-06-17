@@ -70,7 +70,6 @@ export class DashboardComponent implements OnInit {
     this.service.deleteEmployee(this.empObject).subscribe(res => {
       let obj = this.results.find((o, i) => {
         if (o.id === this.empObject.id) {
-          // this.results.splice(i, 1);
           this.results.splice(i, 1);
           return true; // stop searching
         }
@@ -103,6 +102,7 @@ export class DashboardComponent implements OnInit {
           return true; // stop searching
         }
       });
+      this.getUsers();
     }, err => {
       console.log(err);
     });
