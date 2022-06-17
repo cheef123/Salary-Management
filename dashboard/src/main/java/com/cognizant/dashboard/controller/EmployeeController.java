@@ -122,7 +122,7 @@ public class EmployeeController {
 		Employee employee = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
 		repository.delete(employee);
-		return new ResponseEntity<String>("Delete successful",HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@GetMapping("/usersAll")
