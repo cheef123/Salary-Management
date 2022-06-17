@@ -10,10 +10,7 @@ import { Employee } from './employee';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  // for filtered result
   results: Employee[] = [];
-  // for latest results after edit/delete
-  allresults: Employee[] = [];
   empDetail: FormGroup;
   empObject: Employee = new Employee();
   totalRecords: number;
@@ -58,7 +55,6 @@ export class DashboardComponent implements OnInit {
     } else {
       this.sort = "-"
     }
-    console.log(filter);
     this.page = 1;
     this.getUsers();
   }
@@ -72,20 +68,18 @@ export class DashboardComponent implements OnInit {
 
     console.log(this.empObject);
     this.service.deleteEmployee(this.empObject).subscribe(res => {
+      let obj = this.results.find((o, i) => {
+        if (o.id === this.empObject.id) {
+          // this.results.splice(i, 1);
+          this.results.splice(i, 1);
+          return true; // stop searching
+        }
+      });
+      this.getUsers();
     }, err => {
-      console.log("hi");
       console.log(err);
 
     });
-  }
-
-  getAllEmployees() {
-    this.service.getAllEmployees().subscribe(res => {
-      this.allresults = res;
-    }, err => {
-      console.log("Internal Server Error");
-    });
-
   }
 
   editEmployee(emp: Employee) {
@@ -93,7 +87,6 @@ export class DashboardComponent implements OnInit {
     this.empDetail.controls['name'].setValue(emp.name);
     this.empDetail.controls['login'].setValue(emp.login);
     this.empDetail.controls['salary'].setValue(emp.salary);
-    console.log(this.empDetail);
   }
 
   updateEmployee() {
@@ -103,6 +96,7 @@ export class DashboardComponent implements OnInit {
     this.empObject.salary = this.empDetail.value.salary;
 
     this.service.updateEmployee(this.empObject).subscribe(res => {
+      console.log(this.results);
       let obj = this.results.find((o, i) => {
         if (o.id === this.empObject.id) {
           this.results[i] = { id: this.empObject.id, name: this.empObject.name, login: this.empObject.login, salary: this.empObject.salary };
