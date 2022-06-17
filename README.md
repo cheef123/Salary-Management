@@ -102,10 +102,10 @@ User Story 3 is a continuation of User Story 2, with the addition of an ```edit`
 - [x] At the employee dashboard page, you should be able to see the modified information
 - [x] When clicked on the delete button, a confirmation prompt should ask me if I really want to delete this employee
 - [x] When confirmed, the deletion should be persisted on the backend
-- [x] At the employee dashboard page, you should not be able to see this employee. (Need to click on the ```filter``` button again)
+- [x] At the employee dashboard page, you should not be able to see this employee. 
 
 
 
 **Notes:**
-* After editing the salary, the updated value will be reflected on the same row of results. User have to click on the ```filter``` button again to sort the updated value accordingly
-* After deleting an employee, need to click on the filter button again to ensure that the employee record is not available on the dashboard page again
+* After editing the salary, the updated value will be sorted automatically according to the current filters 
+* After deleting an employee, the next employee record in the next page (if exist) will be propagated into the current page
