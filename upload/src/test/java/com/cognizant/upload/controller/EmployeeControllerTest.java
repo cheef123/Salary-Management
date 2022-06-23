@@ -46,9 +46,6 @@ class EmployeeControllerTest {
 	@MockBean
 	private EmployeeService employeeService;
 	
-	@MockBean
-	private CSVHelper csvHelper;
-
 	@Autowired
 	private MockMvc mockMvc;
 

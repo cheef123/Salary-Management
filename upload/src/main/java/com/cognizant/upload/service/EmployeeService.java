@@ -46,6 +46,11 @@ public class EmployeeService {
 	@Autowired
 	private ConcurrentFlagRepository flagRepository;
 	
+	/**
+	 * Check if {@link MultipartFile} has contentType of "text/csv"
+	 * @param file
+	 * @return
+	 */
 	public boolean hasCSVFormat(MultipartFile file) {
 		if (file.getContentType().equals("text/csv")) {
 			return true;
