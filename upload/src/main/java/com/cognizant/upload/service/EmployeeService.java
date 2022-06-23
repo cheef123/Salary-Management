@@ -45,6 +45,13 @@ public class EmployeeService {
 
 	@Autowired
 	private ConcurrentFlagRepository flagRepository;
+	
+	public boolean hasCSVFormat(MultipartFile file) {
+		if (file.getContentType().equals("text/csv")) {
+			return true;
+		}
+		return false;
+	}
 
 	public void setConcurrentFlag(ConcurrentFlag flag, boolean b) {
 		flag.setConcurrent(b);

@@ -38,9 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 public class EmployeeController {
-	
+		
 	@Autowired
 	private EmployeeService service;
+	
 	
 	/**
 	 * This method first checks if the uploaded file is of a csv format. If it is, it will call upon {@link EmployeeService} to save the file into the repository.
@@ -58,7 +59,7 @@ public class EmployeeController {
 	 */
 	@PostMapping("/upload")
 	public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws NonUniqueIdException, NonUniqueLoginException, LoginConflictException, NegativeSalaryException, ColumnSizeException, EmptyFileException, ConcurrentUploadException, SalaryFormatException{
-		if (CSVHelper.hasCSVFormat(file)) {
+		if (service.hasCSVFormat(file)) {
 			try {
 				service.save(file);
 				ResponseMessage message = new ResponseMessage("File uploaded successfully: " + file.getOriginalFilename());
