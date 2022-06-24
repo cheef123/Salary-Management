@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cognizant.dashboard.entity.Employee;
 import com.cognizant.dashboard.exception.ResourceNotFoundException;
 import com.cognizant.dashboard.repository.EmployeeRepository;
+import com.cognizant.dashboard.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +38,9 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeRepository repository;
 
+	@Autowired
+	private EmployeeService service;
+
 	/**
 	 * This method will find the employee details that have salary between minSalary
 	 * and maxSalary and return the results accordingly based on the value of
@@ -52,82 +56,55 @@ public class EmployeeController {
 	@GetMapping("/users")
 	public ResponseEntity<?> getUsers(@RequestParam double minSalary, @RequestParam double maxSalary,
 			@RequestParam int offset, @RequestParam int limit, @RequestParam String sort) {
-		String newSort = sort.substring(1);
-		if (newSort.equals("id")) {
-			if (sort.startsWith("-")) {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByIdDesc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			} else {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByIdAsc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			}
-		}
 
-		if (newSort.equals("name")) {
-			if (sort.startsWith("-")) {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByNameDesc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			} else {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByNameAsc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			}
-		}
-
-		if (newSort.equals("login")) {
-			if (sort.startsWith("-")) {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByLoginDesc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			} else {
-				List<Employee> employees = repository.findBySalaryBetweenOrderByLoginAsc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			}
-		}
-
-		if (newSort.equals("salary")) {
-			if (sort.startsWith("-")) {
-				List<Employee> employees = repository.findBySalaryBetweenOrderBySalaryDesc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			} else {
-				List<Employee> employees = repository.findBySalaryBetweenOrderBySalaryAsc(minSalary, maxSalary);
-				return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-						HttpStatus.OK);
-			}
-		}
-
-		return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
-
+		return service.getUsers(minSalary, maxSalary, offset, limit, sort);
 	}
 
+	/**
+	 * This method will find employee object by id and update the respective fields.
+	 * Throws ResourceNotFoundException if object is not found
+	 * 
+	 * @param id
+	 * @param employeeDetails
+	 * @return
+	 * @throws ResourceNotFoundException
+	 */
 	@PatchMapping("/users/{id}")
 	public ResponseEntity<?> updateEmployees(@PathVariable int id, @RequestBody Employee employeeDetails)
 			throws ResourceNotFoundException {
-		Employee employee = repository.findById(id)
+
+		Employee employee = service.findEmployeeById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+
 		employee.setLogin(employeeDetails.getLogin());
 		employee.setName(employeeDetails.getName());
 		employee.setSalary(employeeDetails.getSalary());
+
 		return new ResponseEntity<Employee>(repository.save(employee), HttpStatus.OK);
 
 	}
 
+	/**
+	 * This method will find and delete the employee object based on id. Throws
+	 * ResourceNotFoundException if employee object is not found
+	 * 
+	 * @param id
+	 * @return
+	 * @throws ResourceNotFoundException
+	 */
 	@DeleteMapping("/users/{id}")
 	public ResponseEntity<?> deleteEmployee(@PathVariable int id) throws ResourceNotFoundException {
-		Employee employee = repository.findById(id)
+
+		Employee employee = service.findEmployeeById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
-		repository.delete(employee);
+		service.deleteEmployee(employee);
+
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-	
+
 	@GetMapping("/usersAll")
-	public ResponseEntity<?> getAllEmployees(){
-		return new ResponseEntity<List<Employee>>(repository.findAll(),HttpStatus.OK);
+	public ResponseEntity<?> getAllEmployees() {
+		return new ResponseEntity<List<Employee>>(service.findAllEmployees(), HttpStatus.OK);
 	}
 
 }
