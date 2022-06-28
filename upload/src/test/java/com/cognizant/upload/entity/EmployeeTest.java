@@ -37,5 +37,14 @@ public class EmployeeTest {
 		employee.setEmpSalary(123.34);
 		assertEquals(123.34, employee.getEmpSalary());
 	}
+	
+	@Test
+	public void testNoArgsConstructor() {
+		Employee employeeNoArgs = new Employee();
+		assertEquals(null, employeeNoArgs.getEmpId());
+		assertEquals(null, employeeNoArgs.getEmpName());
+		assertEquals(null, employeeNoArgs.getEmpLogin());
+		assertEquals(0, employeeNoArgs.getEmpSalary());
+	}
 
 }
