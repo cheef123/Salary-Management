@@ -58,9 +58,9 @@ public class EmployeeService {
 		return false;
 	}
 
-	public void setConcurrentFlag(ConcurrentFlag flag, boolean b) {
+	public ConcurrentFlag setConcurrentFlag(ConcurrentFlag flag, boolean b) {
 		flag.setConcurrent(b);
-		flagRepository.save(flag);
+		return flagRepository.save(flag);
 	}
 
 	/**
@@ -109,11 +109,12 @@ public class EmployeeService {
 	/**
 	 * This method is used to check for the necessary requirements in order to
 	 * upload a csv file.
+	 * @throws IOException 
 	 */
 	public List<Employee> csvToEmployees(InputStream is) throws NonUniqueIdException, NonUniqueLoginException,
-			NegativeSalaryException, ColumnSizeException, EmptyFileException, SalaryFormatException {
-		try {
-			ConcurrentFlag flag = new ConcurrentFlag(1, false);
+			NegativeSalaryException, ColumnSizeException, EmptyFileException, SalaryFormatException, IOException {
+		
+			ConcurrentFlag flag = new ConcurrentFlag(1, true);
 			flagRepository.save(flag);
 			BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 			CSVParser csvParser = new CSVParser(fileReader,
@@ -150,16 +151,18 @@ public class EmployeeService {
 					flagRepository.save(flag);
 					throw new NullPointerException("Missing data in row: " + rowCount + "!");
 				}
+				
+				if (salary.matches("^-\\d+\\.\\d+")) {
+					flagRepository.save(flag);
+					throw new NegativeSalaryException("Salary must be positive! Error found in row: " + rowCount + "!");
+				}
 
 				if (!salary.matches("^\\d+\\.\\d+") && !salary.matches("[0-9]+")) {
 					flagRepository.save(flag);
 					throw new SalaryFormatException("Wrong salary format in row: " + rowCount + "!");
 				}
 
-				if (salary.matches("^-\\d+\\.\\d+")) {
-					flagRepository.save(flag);
-					throw new NegativeSalaryException("Salary must be positive! Error found in row: " + rowCount + "!");
-				}
+				
 				if (idMap.containsKey(id)) {
 					flagRepository.save(flag);
 					throw new NonUniqueIdException("ID is repeated: " + id + "!");
@@ -177,13 +180,9 @@ public class EmployeeService {
 				Employee employee = new Employee(id, login, name, Double.parseDouble(salary));
 				employees.add(employee);
 				rowCount++;
-			}
+			} 
 			flagRepository.save(flag);
 			return employees;
-		} catch (IOException ex) {
-			ConcurrentFlag flag = new ConcurrentFlag(1, false);
-			flagRepository.save(flag);
-			throw new RuntimeException("Failed to parse CSV file: " + ex.getMessage());
-		}
+	
 	}
 }
