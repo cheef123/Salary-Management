@@ -17,7 +17,7 @@ public class EmployeeService {
 	@Autowired
 	private EmployeeRepository repository;
 
-	public ResponseEntity<?> getUsers(double minSalary, double maxSalary, int offset, int limit, String sort) {
+	public List<Employee> getUsers(double minSalary, double maxSalary, int offset, int limit, String sort) {
 		if (sort.substring(1).equals("id")) {
 			return sort.startsWith("-") ? findBySalaryBetweenOrderByIdDesc(minSalary, maxSalary, offset, limit)
 					: findBySalaryBetweenOrderByIdAsc(minSalary, maxSalary, offset, limit);
@@ -37,65 +37,65 @@ public class EmployeeService {
 			return sort.startsWith("-") ? findBySalaryBetweenOrderBySalaryDesc(minSalary, maxSalary, offset, limit)
 					: findBySalaryBetweenOrderBySalaryAsc(minSalary, maxSalary, offset, limit);
 		}
+		return null;
 
-		return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+		
 
 	}
+	
+	public boolean correctColumns(String sort) {
+		String newSort = sort.substring(1);
+		return newSort.matches("id|name|login|salary") ? true : false;
+	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByIdDesc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByIdDesc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByIdDesc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByIdAsc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByIdAsc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByIdAsc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByNameDesc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByNameDesc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByNameDesc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByNameAsc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByNameAsc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByNameAsc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByLoginDesc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByLoginDesc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByLoginDesc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderByLoginAsc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderByLoginAsc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderByLoginAsc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderBySalaryDesc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderBySalaryDesc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderBySalaryDesc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
+
 	}
 
-	public ResponseEntity<List<Employee>> findBySalaryBetweenOrderBySalaryAsc(double minSalary, double maxSalary,
+	public List<Employee> findBySalaryBetweenOrderBySalaryAsc(double minSalary, double maxSalary,
 			int offset, int limit) {
 		List<Employee> employees = repository.findBySalaryBetweenOrderBySalaryAsc(minSalary, maxSalary);
-		return new ResponseEntity<List<Employee>>(employees.subList(offset, Math.min(employees.size(), limit)),
-				HttpStatus.OK);
+		return employees.subList(offset, Math.min(employees.size(), limit));
+				
 	}
 
 	public Optional<Employee> findEmployeeById(int id) {

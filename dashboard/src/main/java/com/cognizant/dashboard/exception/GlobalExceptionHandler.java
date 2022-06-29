@@ -12,8 +12,8 @@ import com.cognizant.dashboard.pojo.CustomErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<CustomErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex){
+	@ExceptionHandler(EmployeeNotFoundException.class)
+	public ResponseEntity<CustomErrorResponse> handleResourceNotFoundException(EmployeeNotFoundException ex){
 		CustomErrorResponse response = new CustomErrorResponse(LocalDateTime.now(),HttpStatus.EXPECTATION_FAILED,"Resource not found!",ex.getMessage());
 		return new ResponseEntity<CustomErrorResponse>(response,HttpStatus.EXPECTATION_FAILED);
 	}

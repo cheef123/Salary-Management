@@ -1,12 +1,12 @@
 package com.cognizant.dashboard.exception;
 
-public class ResourceNotFoundException extends Exception {
+public class EmployeeNotFoundException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public ResourceNotFoundException(String message) {
+	public EmployeeNotFoundException(String message) {
 		super(message);
 	}
 

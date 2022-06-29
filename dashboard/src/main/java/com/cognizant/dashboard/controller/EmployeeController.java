@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognizant.dashboard.entity.Employee;
-import com.cognizant.dashboard.exception.ResourceNotFoundException;
-import com.cognizant.dashboard.repository.EmployeeRepository;
+import com.cognizant.dashboard.exception.EmployeeNotFoundException;
 import com.cognizant.dashboard.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmployeeController {
 
-	@Autowired
-	private EmployeeRepository repository;
 
 	@Autowired
 	private EmployeeService service;
@@ -56,10 +53,15 @@ public class EmployeeController {
 	@GetMapping("/users")
 	public ResponseEntity<?> getUsers(@RequestParam double minSalary, @RequestParam double maxSalary,
 			@RequestParam int offset, @RequestParam int limit, @RequestParam String sort) {
+		
+		if (service.correctColumns(sort)) {
+			List<Employee> employees = service.getUsers(minSalary, maxSalary, offset, limit, sort);
+			return new ResponseEntity<List<Employee>>(employees,HttpStatus.OK);
+	    }
+		
+		return new ResponseEntity<String>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
 
-		return service.getUsers(minSalary, maxSalary, offset, limit, sort);
 	}
-
 	/**
 	 * This method will find employee object by id and update the respective fields.
 	 * Throws ResourceNotFoundException if object is not found
@@ -71,16 +73,16 @@ public class EmployeeController {
 	 */
 	@PatchMapping("/users/{id}")
 	public ResponseEntity<?> updateEmployees(@PathVariable int id, @RequestBody Employee employeeDetails)
-			throws ResourceNotFoundException {
+			throws EmployeeNotFoundException {
 
 		Employee employee = service.findEmployeeById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+				.orElseThrow(() -> new EmployeeNotFoundException("User not found: " + id));
 
 		employee.setLogin(employeeDetails.getLogin());
 		employee.setName(employeeDetails.getName());
 		employee.setSalary(employeeDetails.getSalary());
 
-		return new ResponseEntity<Employee>(repository.save(employee), HttpStatus.OK);
+		return new ResponseEntity<Employee>(service.saveEmployee(employee), HttpStatus.OK);
 
 	}
 
@@ -93,10 +95,10 @@ public class EmployeeController {
 	 * @throws ResourceNotFoundException
 	 */
 	@DeleteMapping("/users/{id}")
-	public ResponseEntity<?> deleteEmployee(@PathVariable int id) throws ResourceNotFoundException {
+	public ResponseEntity<?> deleteEmployee(@PathVariable int id) throws EmployeeNotFoundException {
 
 		Employee employee = service.findEmployeeById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+				.orElseThrow(() -> new EmployeeNotFoundException("User not found: " + id));
 		service.deleteEmployee(employee);
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

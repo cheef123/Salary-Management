@@ -1,6 +1,18 @@
 package com.cognizant.dashboard.controller;
 
+import static org.hamcrest.CoreMatchers.any;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mockitoSession;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,105 +24,119 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.cognizant.dashboard.entity.Employee;
-import com.cognizant.dashboard.exception.ResourceNotFoundException;
+import com.cognizant.dashboard.exception.EmployeeNotFoundException;
 import com.cognizant.dashboard.repository.EmployeeRepository;
+import com.cognizant.dashboard.service.EmployeeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
+@WebMvcTest(EmployeeController.class)
 class EmployeeControllerTest {
 
-	@Mock
-	private EmployeeRepository repository;
-
+	@MockBean
+	private EmployeeService service;
+	
 	@Autowired
-	private EmployeeController controller;
+	private MockMvc mockMvc;
 	
-	Employee employee1 = new Employee(1, "Ryl", "Rylee", 0);
-	Employee employee2 = new Employee(2, "Ric", "Richards", 200);
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	Employee employee1 = new Employee(1, "Ry", "Rylee", 0);
+	Employee employee2 = new Employee(2, "Ri", "Richards", 200);
 	Employee employee3 = new Employee(3, "Law", "Lawrence", 400);
+	
+	@Test
+	public void shouldCreateMockMvcTest() {
+		assertNotNull(mockMvc);
+	}
+	
+	@Test
+	public void getAllEmployeesTest() throws Exception {
+		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1,employee2,employee3));
+		when(service.findAllEmployees()).thenReturn(employees);
+		mockMvc.perform(get("/usersAll"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.length()", is(employees.size())))
+			.andDo(print());
+	}
+	
+	@Test
+	public void deleteEmployeesTest() throws Exception {
+		when(service.findEmployeeById(1)).thenReturn(Optional.of(employee1));
+		mockMvc.perform(delete("/users/{id}","1"))
+			.andExpect(status().isNoContent())
+			.andDo(print()); 
+	}
+	
+	@Test
+	public void deleteEmployeeNotFoundExceptionTest() throws Exception {
+		// return Optional.empty to trigger orelsethrow
+		when(service.findEmployeeById(1)).thenReturn(Optional.empty());
+		mockMvc.perform(delete("/users/{id}","1"))
+		.andExpect(status().isExpectationFailed())
+		.andExpect(jsonPath("$.reason", is("Resource not found!")))
+		.andDo(print());
+	}
+	
+	@Test
+	public void updateEmployeeTest() throws Exception {
+		when(service.findEmployeeById(1)).thenReturn(Optional.of(employee1));
+		Employee updateEmployee = new Employee(1, "Rice", "Ricelee", 10);
+		mockMvc.perform(patch("/users/{id}","1")
+                .contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateEmployee)))
+				.andExpect(status().isOk())
+				.andDo(print());
+	}
+	
+	@Test
+	public void updateEmployeeNotFoundExceptionTest() throws Exception{
+		when(service.findEmployeeById(1)).thenReturn(Optional.empty());
+		Employee updateEmployee = new Employee(1, "Rice", "Ricelee", 10);
+		mockMvc.perform(patch("/users/{id}","1")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(updateEmployee)))
+			.andExpect(status().isExpectationFailed())
+			.andExpect(jsonPath("$.reason", is("Resource not found!")))
+			.andDo(print());
+	}
+	
+	@Test
+	public void getUsersFailTest() throws Exception {
+		when(service.correctColumns(Mockito.any(String.class))).thenReturn(false);
+		mockMvc.perform(get("/users")
+			.param("minSalary","0")
+			.param("maxSalary", "4000")
+			.param("offset", "0")
+			.param("limit", "5")
+			.param("sort", "-salary"))
+			.andExpect(status().isInternalServerError())
+			.andExpect(jsonPath("$", is("Internal Server Error")))
+			.andDo(print());
+		
+	}
+	
+	@Test
+	public void getUsersPassTest() throws Exception {
+		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1,employee2,employee3));
+		when(service.correctColumns(Mockito.any(String.class))).thenReturn(true);
+		mockMvc.perform(get("/users")
+			.param("minSalary","0")
+			.param("maxSalary", "4000")
+			.param("offset", "0")
+			.param("limit", "5")
+			.param("sort", "-salary"))
+			.andExpect(status().isOk())
+			.andDo(print());
+		
+	}
 
-	@Test
-	void sortIdDesctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee3, employee2, employee1));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "-id");
-		Mockito.when(repository.findBySalaryBetweenOrderByIdDesc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByIdDesc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortIdAsctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "+id");
-		Mockito.when(repository.findBySalaryBetweenOrderByIdAsc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByIdAsc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortNameAsctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee3, employee2, employee1));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "+name");
-		Mockito.when(repository.findBySalaryBetweenOrderByNameAsc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByNameAsc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortNameDesctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "-name");
-		Mockito.when(repository.findBySalaryBetweenOrderByNameDesc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByNameDesc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortLoginAsctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee3, employee2, employee1));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "+login");
-		Mockito.when(repository.findBySalaryBetweenOrderByLoginAsc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByLoginAsc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortLoginDesctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "-login");
-		Mockito.when(repository.findBySalaryBetweenOrderByLoginDesc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderByLoginDesc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortSalaryAsctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "+salary");
-		Mockito.when(repository.findBySalaryBetweenOrderBySalaryAsc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderBySalaryAsc(0, 400), responseEntity.getBody());
-	}
-	
-	@Test
-	void sortSalaryDesctest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee3, employee2, employee1));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, "-salary");
-		Mockito.when(repository.findBySalaryBetweenOrderBySalaryDesc(0, 400)).thenReturn(employees);
-		assertEquals(repository.findBySalaryBetweenOrderBySalaryDesc(0, 400), responseEntity.getBody());
-	}
-
-	
-	@Test
-	void internalErrortest() {
-		List<Employee> employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3));
-		ResponseEntity<?> responseEntity = controller.getUsers(0, 400, 0, 5, " ");
-		Mockito.when(repository.findBySalaryBetweenOrderByIdDesc(0, 400)).thenReturn(employees);
-		assertEquals("Internal Server Error", responseEntity.getBody());
-	}
-	
-	@Test
-	void updateEmployeeTest() throws ResourceNotFoundException {
-		Employee employee = new Employee(4, "Lucifer", "Lucy", 1000);
-		ResponseEntity<?> responseEntity = controller.updateEmployees(4, employee);
-		Mockito.when(repository.findById(4)).thenReturn(Optional.of(employee));
-		assertEquals(employee, responseEntity.getBody());
-	}
 }
